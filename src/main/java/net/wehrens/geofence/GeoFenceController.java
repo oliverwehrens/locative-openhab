@@ -58,6 +58,7 @@ public class GeoFenceController {
         if (userLocations.containsKey(user)) {
             if (userLocations.get(user).equals(location)) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                return;
             }
         }
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
