@@ -33,10 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         Stream<String> lines = Files.lines(Paths.get(userFile));
-        lines.forEach(s -> {
-                    System.out.println(s);
-                    String user = s.substring(0, s.indexOf(":"));
-                    String pw = s.substring(s.indexOf(":") + 1, s.length());
+        lines.forEach(userNameWithPassword -> {
+                    String user = userNameWithPassword.substring(0, userNameWithPassword.indexOf(":"));
+                    String pw = userNameWithPassword.substring(userNameWithPassword.indexOf(":") + 1, userNameWithPassword.length());
                     try {
                         auth
                                 .inMemoryAuthentication()
