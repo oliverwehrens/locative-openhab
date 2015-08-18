@@ -16,9 +16,11 @@ public class GeoFence {
         userLocations.put(user, location);
     }
 
-    public void userLeavesLocation(String user) {
+    public void userLeavesLocation(String user, String location) {
         if (userLocations.containsKey(user)) {
-            userLocations.remove(user);
+            if (userLocations.get(user).equals(location)) {
+                userLocations.remove(user);
+            }
         }
     }
 

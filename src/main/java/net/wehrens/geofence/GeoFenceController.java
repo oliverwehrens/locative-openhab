@@ -30,13 +30,13 @@ public class GeoFenceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = "/locations/{location}", method = RequestMethod.DELETE)
     public void removeUserFromLocation(@PathVariable String location) {
-        geoFence.userLeavesLocation(getUserName());
+        geoFence.userLeavesLocation(getUserName(), location);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = "/locations/{location}/leave", method = RequestMethod.POST)
-    public void removeUserFromLocationForGeofancyBecauseItHasJustPOSTAndGET(@PathVariable String location) {
-        geoFence.userLeavesLocation(getUserName());
+    public void removeUserFromLocationForGeofencyBecauseItHasJustPOSTAndGET(@PathVariable String location) {
+        geoFence.userLeavesLocation(getUserName(),location);
     }
 
     @RequestMapping(value = "/locations/{location}/{user}", method = RequestMethod.GET, produces = "application/json")
