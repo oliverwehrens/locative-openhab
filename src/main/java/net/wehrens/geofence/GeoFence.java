@@ -12,7 +12,6 @@ public class GeoFence {
 
     Map<String, String> userLocations = new ConcurrentHashMap<>();
 
-
     public void usersEntersLocation(String user, String location) {
         userLocations.put(user, location);
     }
@@ -32,7 +31,6 @@ public class GeoFence {
             }
         });
         return usersAtLocation;
-
     }
 
     public boolean isUserAtLocation(String user, String location) {

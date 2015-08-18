@@ -49,16 +49,14 @@ public class GeoFenceController {
     }
 
     @RequestMapping(value = "/locations", produces = "application/json")
-    public
     @ResponseBody
-    Map getLocations() {
+    public Map getLocations() {
         return geoFence.userLocations;
     }
 
     @RequestMapping(value = "/locations/{location}", produces = "application/json")
-    public
     @ResponseBody
-    List<String> getUserAtLocations(@PathVariable String location) {
+    public List<String> getUserAtLocations(@PathVariable String location) {
         return geoFence.getUsersAtLocation(location);
     }
 
