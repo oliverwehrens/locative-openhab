@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 @EnableWebMvcSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value(value = "${userfile:/tmp/x}")
+    @Value(value = "${userfile:/tmp/pw.txt}")
     public String userFile;
 
     @Override
