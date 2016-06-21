@@ -1,7 +1,8 @@
 package net.wehrens.geofence;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,36 +17,38 @@ import java.util.stream.Stream;
 @EnableWebMvcSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value(value = "${userfile:/tmp/pw.txt}")
-    public String userFile;
+    @Autowired
+    private Config config;
+
+    private final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/location/**/**").authenticated()
+                .antMatchers("/**", "/").authenticated()
                 .and()
                 .csrf().disable()
                 .httpBasic();
     }
 
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        Stream<String> lines = Files.lines(Paths.get(userFile));
+        Stream<String> lines = Files.lines(Paths.get(config.geoFenceUserFile));
         lines.forEach(userNameWithPassword -> {
-                    String user = userNameWithPassword.substring(0, userNameWithPassword.indexOf(":"));
-                    String pw = userNameWithPassword.substring(userNameWithPassword.indexOf(":") + 1, userNameWithPassword.length());
-                    try {
-                        auth
-                                .inMemoryAuthentication()
-                                .withUser(user).password(pw).roles("USER");
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (userNameWithPassword.contains(":")) {
+                        String user = userNameWithPassword.substring(0, userNameWithPassword.indexOf(":"));
+                        String pw = userNameWithPassword.substring(userNameWithPassword.indexOf(":") + 1, userNameWithPassword.length());
+                        log.debug("Configure user '{}' with password '{}'", user, pw);
+                        try {
+                            auth
+                                    .inMemoryAuthentication()
+                                    .withUser(user).password(pw).roles("USER");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
         );
-
-
     }
 }
