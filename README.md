@@ -53,6 +53,7 @@ docker build -t 'locative' .
 
 docker run -v $PWD:/locative -e OPENHAB=http://openhab.local:8080 locative
 ```
+Running in docker, the server looks up the ``geofenceuserfile`` at /locative/user.pw. So put the file with that name in the volume specified with -v in the above line (e.g. current directory). ``switchprefix`` is also fixed at ``Presence`` when using docker (of course changing that is just a matter of modifing the ``Dockerfile``.
 
 So the chain to trigger presence detection in your local openhab installation running at home could look like this:
 
@@ -62,4 +63,4 @@ So the chain to trigger presence detection in your local openhab installation ru
 +------------+    +--------------------------+    +--------------------------+    +---------+
 ```
 
-DSL Router runs with a DynDNS provider and forwards port 443 to Caddy. Caddy forards the request on a specific domain to the gateway. This gateway triggers openhab.
+DSL Router runs with a DynDNS provider and forwards port 443 to Caddy. Caddy forwards the request on a specific domain to the gateway. This gateway triggers openhab.
