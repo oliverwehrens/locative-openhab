@@ -13,7 +13,7 @@ public class Config {
     private final Logger log = LoggerFactory.getLogger(Config.class);
 
     @Value("${openhabserver}")
-    public String openHabServerUrl = "http://jarvis.local:8080";
+    public String openHabServerUrl = "http://myopenhabservice.local:8080";
 
     @Value("${switchprefix}")
     public String switchPrefix = "Presence";
