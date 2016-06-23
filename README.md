@@ -2,7 +2,10 @@ Locative-Server
 ===============
 
 This is a small backend for Locative (https://itunes.apple.com/us/app/locative/id725198453?mt=8) and 
-Openhab (http://openhab.org).
+Openhab (http://openhab.org). The locative mobile apps are open source on github. 
+
+- iOS: https://github.com/LocativeHQ/ios-app
+- Android: https://github.com/LocativeHQ/android-app
 
 The locative app can be used to trigger presence detection in openhab.
 
