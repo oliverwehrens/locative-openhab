@@ -27,16 +27,16 @@ location is entered the switch will be set to ON, if you leave it will be set to
 from openhab. If you send a test request or a request with any other trigger event you will ge a 400 BAD REQEUST code.
 
 Command line parameter names:
-
+```
 --openhabserver
 --switchprefix
 --geofenceuserfile
-
+```
 
 Example:
-
+```
 java -jar locative.jar --openhabserver=http://myopenhabserver.local:8080 --switchprefix=Anwesenheit --geofenceuserfile=/tmp/pw.txt
-
+```
 To run it with docker:
 
 It is assumed that the password file is named user.pw and located under /locative. So you need to mount it e.g. locally and put the 
@@ -50,3 +50,13 @@ docker build -t 'locative' .
 
 docker run -v $PWD:/locative -e OPENHAB=http://openhab.local:8080 locative
 ```
+
+So the chain to trigger presence detection in your local openhab installation running at home could look like this:
+
+```
++------------+    +--------------------------+    +--------------------------+    +---------+
+| DSL Router | -> | Caddy with Let's encrypt | -> | locative/openhab gateway | -> | openhab |
++------------+    +--------------------------+    +--------------------------+    +---------+
+```
+
+DSL Router runs with a DynDNS provider and forwards port 443 to Caddy. Caddy forards the request on a specific domain to the gateway. This gateway triggers openhab.
