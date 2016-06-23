@@ -64,3 +64,7 @@ So the chain to trigger presence detection in your local openhab installation ru
 ```
 
 DSL Router runs with a DynDNS provider and forwards port 443 to Caddy. Caddy forwards the request on a specific domain to the gateway. This gateway triggers openhab.
+
+Oh yes, and it really is just under 100 lines of real code thanks to Spring Boot & friends. This can be less with php, ruby or python. I did this because I could not find a production ready image (aka Docker) thing which works.
+
+Have fun.
