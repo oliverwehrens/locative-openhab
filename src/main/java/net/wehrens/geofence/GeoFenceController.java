@@ -19,9 +19,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestController
 public class GeoFenceController {
 
-    public final static String ACTION_NAME = "trigger";
+    private final static String ACTION_NAME = "trigger";
 
-    private final Logger log = LoggerFactory.getLogger(GeoFenceController.class);
+    private final static Logger log = LoggerFactory.getLogger(GeoFenceController.class);
 
     private RestTemplate restTemplate = new RestTemplate();
 
