@@ -21,10 +21,12 @@ public class GeoFenceController {
 
     public final static String ACTION_NAME = "trigger";
 
+    private final Logger log = LoggerFactory.getLogger(GeoFenceController.class);
+
+    private RestTemplate restTemplate = new RestTemplate();
+
     @Autowired
     public Config config;
-
-    private final Logger log = LoggerFactory.getLogger(GeoFenceController.class);
 
     @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity managePresence(@RequestParam Map<String, String> allRequestParams) {
@@ -32,7 +34,6 @@ public class GeoFenceController {
         String openHabSwitchName = config.switchPrefix + "_" + location.toLowerCase() + "_" + getUserName().toLowerCase();
         try {
             String openHabSwitchValue = getSwitchValue(allRequestParams);
-            RestTemplate restTemplate = new RestTemplate();
             log.info("Trying to set location {} for user {} to {}.", location, getUserName(), openHabSwitchValue);
             log.info("Using Switch named {}.", openHabSwitchName);
             ResponseEntity<String> response = restTemplate.getForEntity(config.openHabServerUrl + "/CMD?{switch}={value}", String.class, openHabSwitchName, openHabSwitchValue);
