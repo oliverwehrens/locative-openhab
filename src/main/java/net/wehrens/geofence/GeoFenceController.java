@@ -20,13 +20,13 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class GeoFenceController {
 
     private final static String ACTION_NAME = "trigger";
-
     private final static Logger log = LoggerFactory.getLogger(GeoFenceController.class);
-
     private RestTemplate restTemplate = new RestTemplate();
+    private Config config;
 
-    @Autowired
-    public Config config;
+    public GeoFenceController(Config config) {
+        this.config = config;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity managePresence(@RequestParam Map<String, String> allRequestParams) {
@@ -41,7 +41,7 @@ public class GeoFenceController {
             return new ResponseEntity(response.getStatusCode());
 
         } catch (IllegalArgumentException e) {
-            log.error("User {}: {} for location {}.", getUserName(), e.getMessage(), location);
+            log.error("Error: User {}: {} for location {}.", getUserName(), e.getMessage(), location);
             return new ResponseEntity(BAD_REQUEST);
         }
     }

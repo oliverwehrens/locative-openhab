@@ -21,7 +21,6 @@ public class Config {
     @Value("${geofenceuserfile}")
     public String geoFenceUserFile = "/etc/geofenceuserfile.pw";
 
-
     @PostConstruct
     public void outputConfig() {
         log.info("Starting with config: "+toString());
