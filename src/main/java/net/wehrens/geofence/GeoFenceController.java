@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -37,21 +38,30 @@ public class GeoFenceController {
             String openHabSwitchValue = getSwitchValue(allRequestParams);
             log.info("Trying to set location {} for user {} to {}.", location, getUserName(), openHabSwitchValue);
             log.info("Using Switch named {}.", openHabSwitchName);
-            HttpHeaders requestHeaders = new HttpHeaders();
-            requestHeaders.setContentType(MediaType.TEXT_PLAIN);
-            ArrayList acceptableMediaTypes = new ArrayList();
-            acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
-            requestHeaders.setAccept(acceptableMediaTypes);
-            HttpEntity<String> requestUpdate = new HttpEntity<>(openHabSwitchValue, requestHeaders);
             String url = config.openHabServerUrl + "/rest/items/" + openHabSwitchName + "/state";
-            ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, requestUpdate, Void.class);
-            log.info("Got {} response code from openhab server at {}", response.getStatusCode().value(), config.openHabServerUrl);
-            return new ResponseEntity(response.getStatusCode());
+            log.info("Sending Request to '{}'.", url);
+            if (!location.equals("test")) {
+                ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, getHeaders(openHabSwitchValue), Void.class);
+                log.info("Got {} response code from openhab server at {}", response.getStatusCode().value(), config.openHabServerUrl);
+                return new ResponseEntity(response.getStatusCode());
+            } else {
+                log.info("Location 'test' was detected. Not calling OpenHab. Returning status code 200.");
+                return new ResponseEntity(HttpStatus.OK);
+            }
 
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | HttpClientErrorException e) {
             log.error("Error: User {}: {} for location {}.", getUserName(), e.getMessage(), location);
             return new ResponseEntity(BAD_REQUEST);
         }
+    }
+
+    private HttpEntity<String> getHeaders(String openHabSwitchValue) {
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.TEXT_PLAIN);
+        ArrayList acceptableMediaTypes = new ArrayList();
+        acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+        requestHeaders.setAccept(acceptableMediaTypes);
+        return new HttpEntity<>(openHabSwitchValue, requestHeaders);
     }
 
     private String getSwitchValue(Map<String, String> allRequestParams) throws IllegalArgumentException {

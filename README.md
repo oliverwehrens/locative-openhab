@@ -51,7 +51,9 @@ To test it use:
 curl -X POST -u oliver:pw 'http://localhost:9000?id=Home&trigger=enter'
 ```
 
-This will send for the user oliver an ON to the item Presence_home_oliver in Openhab.
+This will send for the user oliver an ON to the item Presence_home_oliver in Openhab. 
+
+If the location 'test' is detected Openhab will not be called and http code 200 will be returned.
 
 To run it with docker:
 
