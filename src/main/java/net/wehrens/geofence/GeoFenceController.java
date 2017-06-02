@@ -3,7 +3,7 @@ package net.wehrens.geofence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -36,7 +37,14 @@ public class GeoFenceController {
             String openHabSwitchValue = getSwitchValue(allRequestParams);
             log.info("Trying to set location {} for user {} to {}.", location, getUserName(), openHabSwitchValue);
             log.info("Using Switch named {}.", openHabSwitchName);
-            ResponseEntity<String> response = restTemplate.getForEntity(config.openHabServerUrl + "/CMD?{switch}={value}", String.class, openHabSwitchName, openHabSwitchValue);
+            HttpHeaders requestHeaders = new HttpHeaders();
+            requestHeaders.setContentType(MediaType.TEXT_PLAIN);
+            ArrayList acceptableMediaTypes = new ArrayList();
+            acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+            requestHeaders.setAccept(acceptableMediaTypes);
+            HttpEntity<String> requestUpdate = new HttpEntity<>(openHabSwitchValue, requestHeaders);
+            String url = config.openHabServerUrl + "/rest/items/" + openHabSwitchName + "/state";
+            ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, requestUpdate, Void.class);
             log.info("Got {} response code from openhab server at {}", response.getStatusCode().value(), config.openHabServerUrl);
             return new ResponseEntity(response.getStatusCode());
 

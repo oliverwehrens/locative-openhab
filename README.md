@@ -1,6 +1,10 @@
 Locative-Server
 ===============
 
+Update:
+
+2017-06-02 This is now compatible with OpenHab2 and uses it's REST API.
+
 This is a small backend for Locative (https://itunes.apple.com/us/app/locative/id725198453?mt=8) and 
 Openhab (http://openhab.org). The locative mobile apps are open source on github. 
 
@@ -40,6 +44,15 @@ Example:
 ```
 java -jar locative.jar --openhabserver=http://myopenhabserver.local:8080 --switchprefix=Anwesenheit --geofenceuserfile=/tmp/pw.txt
 ```
+
+To test it use:
+
+```
+curl -X POST -u oliver:pw 'http://localhost:9000?id=Home&trigger=enter'
+```
+
+This will send for the user oliver an ON to the item Presence_home_oliver in Openhab.
+
 To run it with docker:
 
 It is assumed that the password file is named user.pw and located under /locative. So you need to mount it e.g. locally and put the 
