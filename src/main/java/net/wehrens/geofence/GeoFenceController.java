@@ -36,13 +36,13 @@ public class GeoFenceController {
         String openHabSwitchName = config.switchPrefix + "_" + location.toLowerCase() + "_" + getUserName().toLowerCase();
         try {
             String openHabSwitchValue = getSwitchValue(allRequestParams);
-            log.info("Trying to set location {} for user {} to {}.", location, getUserName(), openHabSwitchValue);
-            log.info("Using Switch named {}.", openHabSwitchName);
             String url = config.openHabServerUrl + "/rest/items/" + openHabSwitchName + "/state";
-            log.info("Sending Request to '{}'.", url);
+            log.info("Sending Request to '{}' with value '{}'.", url, openHabSwitchValue);
             if (!location.equals("test")) {
-                ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, getHeaders(openHabSwitchValue), Void.class);
+                ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(openHabSwitchValue, getHeaders()), Void.class);
                 log.info("Got {} response code from openhab server at {}", response.getStatusCode().value(), config.openHabServerUrl);
+                ResponseEntity<String> newValue = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(getHeaders()), String.class);
+                log.info("New value for {} at Openhab is: {}.", openHabSwitchName, newValue.getBody());
                 return new ResponseEntity(response.getStatusCode());
             } else {
                 log.info("Location 'test' was detected. Not calling OpenHab. Returning status code 200.");
@@ -55,13 +55,13 @@ public class GeoFenceController {
         }
     }
 
-    private HttpEntity<String> getHeaders(String openHabSwitchValue) {
+    private HttpHeaders getHeaders() {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.TEXT_PLAIN);
         ArrayList acceptableMediaTypes = new ArrayList();
         acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
         requestHeaders.setAccept(acceptableMediaTypes);
-        return new HttpEntity<>(openHabSwitchValue, requestHeaders);
+        return requestHeaders;
     }
 
     private String getSwitchValue(Map<String, String> allRequestParams) throws IllegalArgumentException {
