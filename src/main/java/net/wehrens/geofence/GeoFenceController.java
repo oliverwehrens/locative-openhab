@@ -39,9 +39,9 @@ public class GeoFenceController {
             String url = config.openHabServerUrl + "/rest/items/" + openHabSwitchName + "/state";
             log.info("Sending Request to '{}' with value '{}'.", url, openHabSwitchValue);
             if (!location.equals("test")) {
-                ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(openHabSwitchValue, getHeaders()), Void.class);
+                ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, new HttpEntity<>(openHabSwitchValue, getHeaders()), Void.class);
                 log.info("Got {} response code from openhab server at {}", response.getStatusCode().value(), config.openHabServerUrl);
-                ResponseEntity<String> newValue = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(getHeaders()), String.class);
+                ResponseEntity<String> newValue = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), String.class);
                 log.info("New value for {} at Openhab is: {}.", openHabSwitchName, newValue.getBody());
                 return new ResponseEntity(response.getStatusCode());
             } else {
